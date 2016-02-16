@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Info windows</title>
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+
+// This example displays a marker at the center of United States.
+// When the user clicks the marker, an info window opens.
+
+var map;
+
+var companies = [{name : 'Hoovers', address : '5800 Airport Blvd., Austin, TX 78752', duns : '4919486'},
+        {name: 'Exxon Mobile Corp', address: '5959 Las Colinas Blvd, Irving, TX 75039', duns: '1213214'},
+        {name: 'CARGILL, INCORPORATED', address: '15407 Mcginty Rd W, Wayzata, MN 55391', duns: '1213214'},
+        {name: 'PEPSICO, INC', address: '700 Anderson Hill Rd, Westchester, NY 10577', duns: '1213214'},
+        {name: 'CATERPILLAR', address: '100 Ne Adams St, Peoria, IL 61629', duns: '1213214'},
+        {name: 'THE COCA-COLA COMPANY', address: '1 Coca Cola Plz Nw, Atlanta, GA 30313', duns: '1213214'}];
+var events = [['Opportunity', 'Salesforce'],
+              ['Invoice', 'Netsuite'],
+              ['Purchase Order', 'Sage']];
+var markers = [];
+var geocoder;
+var usgeocenter = {lat:37, lng: -95.7};
+var marker = null;
+var infowindow = null;
+
+function selectRandomItemIndex(items) {
+  return Math.floor(Math.random()*items.length);
+}
+
+function removeMarkersFromMap() {
+  for (var i=0; i<markers.length; i++) {
+    markers[i].setMap(null);
+  }
+}
+
+function selectCounterpart(index, companies) {
+  var candidates = [];
+  for (var i=0; i<companies.length; i++) {
+      if (i != index) {
+          candidates.push(companies[i]);
+      }
+  }
+    return candidates[selectRandomItemIndex(candidates)];
+}
+
+function consumeNextCompany() {
+  console.log("Consume next company...");
+  console.log(markers.length);
+  console.log(companies.length);
+  if (infowindow) {
+      infowindow.close()
+  }
+  removeMarkersFromMap();
+
+  if (markers.length < companies.length) {
+      console.log("Waiting for initialization...");
+      return;
+  }
+
+  console.log("Consuming next company...");
+  var index = selectRandomItemIndex(companies);
+  var company = companies[index];
+  console.log(company);
+
+  marker = markers[index];
+  marker.setMap(map);
+
+  event = events[selectRandomItemIndex(events)];
+  counterpart = selectCounterpart(index, companies);
+
+  infowindow = new google.maps.InfoWindow({
+    content: '<b>' + company.name + '</b><br/>' + counterpart.name + ' (DUNS #:' + counterpart.duns + ')<br/>' + event[0] + ' was created in ' + event[1]
+  });
+  infowindow.open(map, marker);
+  map.panTo(marker.position)
+}
+
+function initMarkers() {
+    console.log("INitializing markers...");
+    var geocoder = new google.maps.Geocoder();
+
+    for (var i=0; i<companies.length; i++) {
+        var company = companies[i];
+        geocoder.geocode({'address' : company.address}, function(results, status) {
+            console.log("Geocoded address: " + results[0].geometry.location);
+            if (status === google.maps.GeocoderStatus.OK) {
+                var position = results[0].geometry.location;
+                var marker = new google.maps.Marker({
+                    map: null,
+                    position: position,
+                    title: 'Company Info'
+                });
+                markers.push(marker);
+            } else {
+                alert('initMap() - Geocode was not successful for the following reason: ' + status);
+            }
+        });
+    }
+}
+
+function initMap() {
+  var geocoder = new google.maps.Geocoder();
+  map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 6,
+        center: usgeocenter
+      });
+  initMarkers();
+}
+
+function geocodeAddress(resultsMap, address, handler) {
+  var geocoder = new google.maps.Geocoder();
+  console.log("Geocoding " + address);
+  geocoder.geocode({'address': address}, handler);
+}
+
+setInterval(consumeNextCompany, 5000);
+
+    </script>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdYEkAk1YQUXoT1Tbp9kdhmcrcFUfWz7k&signed_in=true&callback=initMap">
+    </script>
+  </body>
+</html>
