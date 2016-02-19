@@ -14,12 +14,12 @@
         height: 100%;
       }
       #logo {
-    position: absolute;
-    border: 0!important;
-    bottom: 50px;
-    right: 50px;
-    border: 3px solid #73AD21;
-    z-index: 99999;
+        position: absolute;
+        border: 0!important;
+        bottom: 50px;
+        right: 50px;
+        border: 3px solid #73AD21;
+        z-index: 99999;
     }
     </style>
   </head>
@@ -31,11 +31,12 @@
 var map;
 
 var companies = [{name : 'Hoovers', address : '5800 Airport Blvd., Austin, TX 78752', duns : '4919486'},
-        {name: 'Exxon Mobile Corp', address: '5959 Las Colinas Blvd, Irving, TX 75039', duns: '1213214'},
-        {name: 'CARGILL, INCORPORATED', address: '15407 Mcginty Rd W, Wayzata, MN 55391', duns: '1213214'},
-        {name: 'PEPSICO, INC', address: '700 Anderson Hill Rd, Westchester, NY 10577', duns: '1213214'},
-        {name: 'CATERPILLAR', address: '100 Ne Adams St, Peoria, IL 61629', duns: '1213214'},
-        {name: 'THE COCA-COLA COMPANY', address: '1 Coca Cola Plz Nw, Atlanta, GA 30313', duns: '1213214'}];
+        {name: 'Exxon Mobile Corp', address: '5959 Las Colinas Blvd, Irving, TX 75039', duns: '2494065'},
+        {name: 'CARGILL, INCORPORATED', address: '15407 Mcginty Rd W, Wayzata, MN 55391', duns: '6249189'},
+        {name: 'PEPSICO, INC', address: '700 Anderson Hill Rd, Westchester, NY 10577', duns: '1287762'},
+        {name: 'CATERPILLAR', address: '100 Ne Adams St, Peoria, IL 61629', duns: '5070479'},
+        {name: 'THE COCA-COLA COMPANY', address: '1 Coca Cola Plz Nw, Atlanta, GA 30313', duns: '3296175'}];
+
 var events = [['Opportunity', 'Salesforce'],
               ['Invoice', 'Netsuite'],
               ['Purchase Order', 'Sage']];
@@ -98,7 +99,6 @@ function consumeNextCompany() {
 }
 
 function initMarkers() {
-    console.log("INitializing markers...");
     var geocoder = new google.maps.Geocoder();
 
     for (var i=0; i<companies.length; i++) {
